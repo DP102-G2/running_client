@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navi_gaith"
+    app:startDestination="@id/shopMainFragment">
+
+    <fragment
+        android:id="@+id/shopMainFragment"
+        android:name="com.gt.running_client.ShopMainFragment"
+        android:label="fragment_shop_main"
+        tools:layout="@layout/fragment_shop_main" >
+        <action
+            android:id="@+id/action_shopMainFragment_to_shopOrderMainFragment"
+            app:destination="@id/shopOrderMainFragment" />
+        <action
+            android:id="@+id/action_shopMainFragment_to_shopBuggyMainFragment"
+            app:destination="@id/shopBuggyMainFragment" />
+        <action
+            android:id="@+id/action_shopMainFragment_to_shopCutomerMainFragment"
+            app:destination="@id/shopCutomerMainFragment" />
+        <action
+            android:id="@+id/action_shopMainFragment_to_orderDetailFragment"
+            app:destination="@id/orderDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shopBuggyMainFragment"
+        android:name="com.gt.running_client.ShopBuggyMainFragment"
+        android:label="fragment_shop_buggy_main"
+        tools:layout="@layout/fragment_shop_buggy_main" />
+    <fragment
+        android:id="@+id/shopOrderMainFragment"
+        android:name="com.gt.running_client.ShopOrderMainFragment"
+        android:label="fragment_shop_order_main"
+        tools:layout="@layout/fragment_shop_order_main" />
+    <fragment
+        android:id="@+id/shopCutomerMainFragment"
+        android:name="com.gt.running_client.ShopCutomerMainFragment"
+        android:label="fragment_shop_cutomer_main"
+        tools:layout="@layout/fragment_shop_cutomer_main" />
+    <fragment
+        android:id="@+id/orderDetailFragment"
+        android:name="com.gt.running_client.OrderDetailFragment"
+        android:label="fragment_order_detail"
+        tools:layout="@layout/fragment_order_detail" />
+</navigation>

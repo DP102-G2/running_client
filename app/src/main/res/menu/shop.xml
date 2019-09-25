@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="立倫" android:id="@+id/shopMainFragment" android:icon="@drawable/ic_news" />
+    <item android:title="忠義" android:id="@+id/shopBuggyMainFragment" android:icon="@drawable/ic_news" />
+    <item android:title="阿智" android:id="@+id/shopOrderMainFragment" android:icon="@drawable/ic_news"/>
+    <item android:title="俊宇" android:id="@+id/shopCutomerMainFragment" android:icon="@drawable/ic_news"/>
+    <item android:title="勁惟" android:id="@+id/orderDetailFragment" android:icon="@drawable/ic_news" />
+</menu>
