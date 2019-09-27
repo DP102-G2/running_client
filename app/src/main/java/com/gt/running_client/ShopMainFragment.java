@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -29,28 +31,30 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+/* View.int 指向元件可見 */
+import static android.view.View.VISIBLE;
+import static android.view.View.GONE;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ShopMainFragment extends Fragment {
 
-
-    private static final String TAG = "TAG_MainFragment";
+    private static final String TAG = "TAG_ShopMain";
     private static final int REQ_SIGN_IN = 101;
     private Activity activity;
+    private EditText etMail, etPassword;
     private TextView textView;
+    private Button btSignOut;
     private GoogleSignInClient client;
     private FirebaseAuth auth;
 
     //  要記得至登入方式設定允許一個電子郵件使用多種的登入方式
-    //  因為同一個信箱會用FB、GOOGLE登入
+    //  因為同一個信箱會用Facebook、Google登入
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = getActivity();
         auth = FirebaseAuth.getInstance();
+
         GoogleSignInOptions options = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 // 由google-services.json轉出
@@ -61,7 +65,7 @@ public class ShopMainFragment extends Fragment {
                 .requestEmail()
                 .build();
         client = GoogleSignIn.getClient(activity, options);
-        // 取得CLIENT物件
+        //  取得 CLIENT 物件
     }
 
     @Override
@@ -74,7 +78,24 @@ public class ShopMainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        etMail = view.findViewById(R.id.etMail);
+        etPassword = view.findViewById(R.id.etPassword);
         textView = view.findViewById(R.id.textView);
+        btSignOut = view.findViewById(R.id.btSignOut);
+
+        view.findViewById(R.id.btSignIn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mail = etMail.getText().toString();
+                String password = etPassword.getText().toString();
+
+                if(mail.length() <= 0 || mail != null ){
+                    textView.setText("Invalid name or password!");
+                } else {
+                    signIn(mail, password);
+                }
+            }
+        });
 
         view.findViewById(R.id.btSignInGoogle).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,9 +103,22 @@ public class ShopMainFragment extends Fragment {
                 signInGoogle();
             }
         });
+
+        btSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser user = auth.getCurrentUser();
+                if (user != null) {
+                    auth.signOut();
+                    textView.setText("Logged out.");
+                    Common.toast(activity,"Logged out");
+                    btSignOut.setVisibility(GONE);
+                }
+            }
+        });
     }
 
-    // 跳出Google登入畫面
+    // 跳出 Google 登入畫面
     private void signInGoogle() {
         Intent signInIntent = client.getSignInIntent();
 
@@ -116,11 +150,11 @@ public class ShopMainFragment extends Fragment {
         }
     }
 
-    // 使用Google帳號完成Firebase驗證
+    // 使用 Google 帳號完成 Firebase 驗證
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         // get the unique ID for the Google account
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-        //從帳務中拿出ID
+        //從帳戶中拿出ID
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         // 取得憑證，也就是所謂的TOKEN，才能拿來存入AUTH
         auth.signInWithCredential(credential)
@@ -132,7 +166,9 @@ public class ShopMainFragment extends Fragment {
                         // 登入成功轉至下頁；失敗則顯示錯誤訊息
                         if (task.isSuccessful()) {
                             //記錄成功
-                            textView.setText("Success");
+                            textView.setText("Logged in successfully");
+                            Common.toast(activity,"Logged in");
+                            btSignOut.setVisibility(VISIBLE);
                         } else {
                             Exception exception = task.getException();
                             String message = exception == null ? "Sign in fail." : exception.getMessage();
@@ -146,14 +182,42 @@ public class ShopMainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        // 檢查user是否已經登入，是則FirebaseUser物件不為null
+        // 檢查 user 是否已經登入，是則 FirebaseUser 物件不為 null
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
-            textView.setText("Success");
-
+            Common.toast(activity,"Logged in");
+            textView.setText("Already Logged in.");
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            btSignOut.setVisibility(VISIBLE);
+        }
+        btSignOut.setVisibility(GONE);
+    }
 
+    private void signIn(String email, String password) {
+        // 利用 user 輸入的 Email 與 Password 登入
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
+                        // 登入成功轉至下頁；失敗則顯示錯誤訊息
+                        if (task.isSuccessful()) {
+                            Navigation.findNavController(etMail)
+                                    .navigate(R.id.action_shopMainFragment_to_shopCutomerMainFragment);
+                        } else {
+                            Exception exception = task.getException();
+                            String message = (exception == null) ? "Sign in fail." : exception.getMessage();
+                            textView.setText(message);
+                        }
+
+                    }
+                });
+    }
 }
