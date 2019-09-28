@@ -6,4 +6,6 @@
     <string name="Sex">性別</string>
     <string name="height">身高</string>
     <string name="age">年齡</string>
+    <string name="weight">體重</string>
+    <string name="bminumber">BMInumber</string>
 </resources>

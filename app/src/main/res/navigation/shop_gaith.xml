@@ -32,7 +32,11 @@
         android:id="@+id/shopOrderMainFragment"
         android:name="com.gt.running_client.ShopOrderMainFragment"
         android:label="fragment_shop_order_main"
-        tools:layout="@layout/fragment_shop_order_main" />
+        tools:layout="@layout/fragment_shop_order_main" >
+        <action
+            android:id="@+id/action_shopOrderMainFragment_to_run2Fragment"
+            app:destination="@id/run2Fragment" />
+    </fragment>
     <fragment
         android:id="@+id/shopCutomerMainFragment"
         android:name="com.gt.running_client.ShopCutomerMainFragment"
@@ -43,4 +47,9 @@
         android:name="com.gt.running_client.OrderDetailFragment"
         android:label="fragment_order_detail"
         tools:layout="@layout/fragment_order_detail" />
+    <fragment
+        android:id="@+id/run2Fragment"
+        android:name="com.gt.running_client.run2Fragment"
+        android:label="fragment_run2"
+        tools:layout="@layout/fragment_run2" />
 </navigation>
